@@ -1,20 +1,18 @@
-import openpyxl as xl
+from transaction import Transaction
 import os
 
-def get_csv_file_data() -> None:
+def get_transaction_data():
+    transaction_list = []
     os.chdir('excel')
-    wb = xl.Workbook()
-    del wb['Sheet']
-    wb.create_sheet('data')
 
     with open('bk_download.csv','r') as download_handle:
-        for line in download_handle:
-            line = purge_quoted_strings(line)
-            line_items = line.strip().split(',')
-            print(line_items)
-            wb['data'].append(line_items)
-    
-    wb.save('bk_download.xlsx')
+        for idx, line in enumerate(download_handle):
+            if idx != 0:
+                line = purge_quoted_strings(line)
+                line_items = line.strip().split(',')
+                transaction_list.append(Transaction(line_items))
+
+    return transaction_list
 
 def purge_quoted_strings(line: str):
     start_pos = line.find('"')
@@ -28,10 +26,3 @@ def purge_quoted_strings(line: str):
     modified_quote2 = line[second_quote[0]:second_quote[1]].replace(',',';')
 
     return line[:first_quote[0]] + modified_quote1 + line[first_quote[1]:second_quote[0]] + modified_quote2 + line[second_quote[1]:]
-
-def main():
-    get_csv_file_data()
-
-
-if __name__ == '__main__':
-    main()
