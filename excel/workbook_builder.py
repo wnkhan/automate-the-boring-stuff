@@ -6,10 +6,19 @@ from datetime import date
 from transaction import Transaction
 
 class WorkbookBuilder:
+    eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food"]
+
     def __init__(self, transaction_list : List[Transaction]):
         self.transaction_list = transaction_list
+        self.consolidate_eating_out()
         self.monthly_transactions = {}
         self.monthly_transactions_by_category = {}
+
+    def consolidate_eating_out(self):
+        for trans in self.transaction_list:
+            if trans.category in WorkbookBuilder.eating_out_categories: 
+                trans.category = "Eating Out"
+        
 
     def get_sheetnames(self) -> List[str]:
         transaction_dates = [get_month_and_year(trans.t_date) for trans in self.transaction_list]
@@ -61,7 +70,9 @@ class WorkbookBuilder:
                 wb[sheet].append(trans_details)
 
             income_category = []
-            for category in self.get_categories_by_month(sheet):
+            monthly_categories = self.get_categories_by_month(sheet)
+            sorted_categories = sorted(monthly_categories)
+            for category in sorted_categories:
                 category_amount = self.monthly_transactions_by_category[sheet][category]
                 number_of_monthly_transactions = len(self.monthly_transactions[sheet])
                 formula = "=SUMPRODUCT(--('" + sheet + "'!C1:C" + str(number_of_monthly_transactions) + " = \"" + category + "\"),'" + sheet + "'!D1:D" + str(number_of_monthly_transactions) + ")"
