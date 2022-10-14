@@ -63,7 +63,9 @@ class WorkbookBuilder:
             income_category = []
             for category in self.get_categories_by_month(sheet):
                 category_amount = self.monthly_transactions_by_category[sheet][category]
-                category_row = [category,category_amount]
+                number_of_monthly_transactions = len(self.monthly_transactions[sheet])
+                formula = "=SUMPRODUCT(--('" + sheet + "'!C1:C" + str(number_of_monthly_transactions) + " = \"" + category + "\"),'" + sheet + "'!D1:D" + str(number_of_monthly_transactions) + ")"
+                category_row = [category,formula]
 
                 if category_amount < 0:
                     wb[sheet+"-categories"].append(category_row)
