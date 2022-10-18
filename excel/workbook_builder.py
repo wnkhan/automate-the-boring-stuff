@@ -6,19 +6,12 @@ from datetime import date
 from transaction import Transaction
 
 class WorkbookBuilder:
-    eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food"]
 
     def __init__(self, transaction_list : List[Transaction]):
         self.transaction_list = transaction_list
-        self.consolidate_eating_out()
         self.monthly_transactions = {}
         self.monthly_transactions_by_category = {}
 
-    def consolidate_eating_out(self):
-        for trans in self.transaction_list:
-            if trans.category in WorkbookBuilder.eating_out_categories: 
-                trans.category = "Eating Out"
-        
 
     def get_sheetnames(self) -> List[str]:
         transaction_dates = [get_month_and_year(trans.t_date) for trans in self.transaction_list]

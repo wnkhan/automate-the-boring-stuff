@@ -1,9 +1,10 @@
 import openpyxl as xl
-from data_converter import get_transaction_data
+from transaction_extractor import TransactionExtractor
 from workbook_builder import WorkbookBuilder
 
 def main():
-    workbook_builder = WorkbookBuilder(get_transaction_data())
+    transaction_extractor = TransactionExtractor()
+    workbook_builder = WorkbookBuilder(transaction_extractor.transaction_list)
     workbook_builder.build_workbook()
 
 if __name__ == '__main__':

@@ -1,18 +1,51 @@
 from transaction import Transaction
+import re
 import os
 
-def get_transaction_data():
-    transaction_list = []
-    os.chdir('excel')
+class TransactionExtractor:
+    eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food"]
+    subscriptions = ["Apple","Netflix","Spotify","ExpressVPN","Youtube","Medium",
+                    "LinkedIn","Pluralsight","Game Pass","Prime"]
 
-    with open('bk_download.csv','r') as download_handle:
-        for idx, line in enumerate(download_handle):
-            if idx != 0:
-                line = purge_quoted_strings(line)
-                line_items = line.strip().split(',')
-                transaction_list.append(Transaction(line_items))
+    def __init__(self):
+        self.transaction_list = []
+        self.build_transaction_data_from_csv()
+        self.consolidate_eating_out()
+        self.consolidate_subscriptions()
 
-    return transaction_list
+
+    def build_transaction_data_from_csv(self):
+        os.chdir('excel')
+
+        with open('bk_download.csv','r') as download_handle:
+            for idx, line in enumerate(download_handle):
+                if idx != 0:
+                    line = purge_quoted_strings(line)
+                    line_items = line.strip().split(',')
+                    self.transaction_list.append(Transaction(line_items))
+
+
+    def consolidate_eating_out(self):
+        for trans in self.transaction_list:
+            if trans.category in TransactionExtractor.eating_out_categories: 
+                trans.category = "Eating Out"
+
+    def consolidate_subscriptions(self):
+        for trans in self.transaction_list:
+            if re.search(self.build_regex(),trans.d1):
+                trans.category = "Subscriptions"
+
+    @staticmethod
+    def build_regex():
+        result = ""
+        for index, sub in enumerate(TransactionExtractor.subscriptions):
+            if index < len(TransactionExtractor.subscriptions) - 1:
+                result += sub + "|"
+            else:
+                result += sub
+        return result
+
+
 
 def purge_quoted_strings(line: str):
     start_pos = line.find('"')
