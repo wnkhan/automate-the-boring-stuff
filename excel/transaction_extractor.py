@@ -1,3 +1,4 @@
+from typing import List
 from transaction import Transaction
 import re
 import os
@@ -27,19 +28,19 @@ class TransactionExtractor:
 
     def consolidate_eating_out(self):
         for trans in self.transaction_list:
-            if trans.category in TransactionExtractor.eating_out_categories: 
+            if re.search(self.build_regex(TransactionExtractor.eating_out_categories),trans.category,re.IGNORECASE):
                 trans.category = "Eating Out"
 
     def consolidate_subscriptions(self):
         for trans in self.transaction_list:
-            if re.search(self.build_regex(),trans.d1):
+            if re.search(self.build_regex(TransactionExtractor.subscriptions),trans.d1,re.IGNORECASE):
                 trans.category = "Subscriptions"
 
     @staticmethod
-    def build_regex():
+    def build_regex(target_strs : List[str]):
         result = ""
-        for index, sub in enumerate(TransactionExtractor.subscriptions):
-            if index < len(TransactionExtractor.subscriptions) - 1:
+        for index, sub in enumerate(target_strs):
+            if index < len(target_strs) - 1:
                 result += sub + "|"
             else:
                 result += sub
