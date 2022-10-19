@@ -4,7 +4,7 @@ import re
 import os
 
 class TransactionExtractor:
-    eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food"]
+    eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food","Alcohol & Bars"]
     subscriptions = ["Apple","Netflix","Spotify","ExpressVPN","Youtube","Medium",
                     "LinkedIn","Pluralsight","Game Pass","Prime"]
 
