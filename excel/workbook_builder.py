@@ -78,16 +78,22 @@ class WorkbookBuilder:
                 else:
                     income_category.append(category_row)
 
+            wb[sheet+"-categories"].append([10*"-",10*"-"])
+
             total_expense_formula = "=SUM(B1:B" + str(len(sorted_categories)-len(income_category)) + ")"
             wb[sheet+"-categories"].append(["Total Expenses" ,total_expense_formula])
 
             wb[sheet+"-categories"].append([10*"-",10*"-"])
             [wb[sheet+"-categories"].append(row) for row in income_category]
 
+            wb[sheet+"-categories"].append([10*"-",10*"-"])
+
             number_of_expense_categories = len(sorted_categories) - len(income_category)
-            number_of_rows_before_income_total = number_of_expense_categories + 2 + len(income_category)
-            total_income_formula = "=SUM(B" + str(number_of_expense_categories + 3) + ":B" + str(number_of_rows_before_income_total) + ")"
+            number_of_rows_before_income_total = number_of_expense_categories + 3 + len(income_category)
+            total_income_formula = "=SUM(B" + str(number_of_expense_categories + 4) + ":B" + str(number_of_rows_before_income_total) + ")"
             wb[sheet+"-categories"].append(["Total Income" ,total_income_formula])
+
+            wb[sheet+"-categories"].append([10*"-",10*"-"])
 
             pie = PieChart()
             labels = Reference(wb[sheet+"-categories"],min_col=1,min_row=1,max_row=len(self.get_categories_by_month(sheet))-len(income_category))
