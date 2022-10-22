@@ -1,0 +1,1 @@
+python3 %USERPROFILE%\Repos\automate-the-boring-stuff\excel\main.py

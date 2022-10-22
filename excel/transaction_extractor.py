@@ -16,7 +16,9 @@ class TransactionExtractor:
 
 
     def build_transaction_data_from_csv(self):
-        os.chdir('excel')
+        print('current working directory: ' + os.getcwd())
+        project_dir = os.environ.get('USERPROFILE') + '\\Repos\\automate-the-boring-stuff\\'
+        os.chdir(project_dir + 'excel')
 
         with open('bk_download.csv','r') as download_handle:
             for idx, line in enumerate(download_handle):
