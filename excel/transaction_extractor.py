@@ -5,6 +5,7 @@ import os
 
 class TransactionExtractor:
     eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food","Alcohol & Bars"]
+    bill_and_utility_categories = ["car","Mobile Phone", "Rent", "Storage","Utilities"]
     subscriptions = ["Apple","Netflix","Spotify","ExpressVPN","Youtube","Medium",
                     "LinkedIn","Pluralsight","Game Pass","Prime"]
 
@@ -12,6 +13,7 @@ class TransactionExtractor:
         self.transaction_list = []
         self.build_transaction_data_from_csv()
         self.consolidate_eating_out()
+        self.consolidate_bills_and_utilities()
         self.consolidate_subscriptions()
 
 
@@ -32,6 +34,11 @@ class TransactionExtractor:
         for trans in self.transaction_list:
             if re.search(self.build_regex(TransactionExtractor.eating_out_categories),trans.category,re.IGNORECASE):
                 trans.category = "Eating Out"
+
+    def consolidate_bills_and_utilities(self):
+        for trans in self.transaction_list:
+            if re.search(self.build_regex(TransactionExtractor.bill_and_utility_categories),trans.category,re.IGNORECASE):
+                trans.category = "Bills & Utilities"
 
     def consolidate_subscriptions(self):
         for trans in self.transaction_list:
