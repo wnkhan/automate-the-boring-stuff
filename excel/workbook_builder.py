@@ -1,49 +1,45 @@
 from unicodedata import category
 import openpyxl as xl
 from openpyxl.chart import (PieChart,Reference)
-from typing import List
+from typing import Dict, List
 from datetime import date
+import re
+from trans_db_api import TransactionDatabase
 from transaction import Transaction
 
 class WorkbookBuilder:
 
-    def __init__(self, transaction_list : List[Transaction]):
-        self.transaction_list = transaction_list
+    def __init__(self, transaction_db : TransactionDatabase):
+        self.transaction_db = transaction_db
         self.monthly_transactions = {}
         self.monthly_transactions_by_category = {}
 
 
     def get_sheetnames(self) -> List[str]:
-        transaction_dates = [get_month_and_year(trans.t_date) for trans in self.transaction_list]
-        date_set = set(transaction_dates)
-        sheetnames = list(date_set)
-        sheetnames.sort()
-
-        return sheetnames
+        return self.transaction_db.get_unique_month_and_years()
 
     def get_categories_by_month(self, month_and_year : str) -> List[str]:
-        monthly_transactions = self.monthly_transactions[month_and_year]
-        return set([trans.category for trans in monthly_transactions])
+        month, year = month_and_year.split('-')
+        categories = []
+        for cat in self.transaction_db.get_categories_by_month(month,year):
+            categories.append(re.search('[a-zA-Z &]+',str(cat)).group(0))
+        return categories
+
 
     def update_workbook_data(self) -> None:
+        for month_year in self.transaction_db.get_unique_month_and_years():
+            month, year = month_year.split('-')
+            monthly_transactions = self.transaction_db.get_transactions_by_month(month,year)
+            self.monthly_transactions.setdefault(month_year,monthly_transactions)
+
         for sheet in self.get_sheetnames():
-
-            if self.monthly_transactions.get(sheet) is None:
-                self.monthly_transactions[sheet] = [] 
-
             if self.monthly_transactions_by_category.get(sheet) is None:
                 self.monthly_transactions_by_category[sheet] = {}
 
-        for trans in self.transaction_list:
-            month_and_year = get_month_and_year(trans.t_date)
-            if self.monthly_transactions.get(month_and_year) is not None:
-                self.monthly_transactions[month_and_year].append(trans)
-        
         for month in self.get_sheetnames():
             for category in self.get_categories_by_month(month):
-                self.monthly_transactions_by_category[month][category] = 0.0
-            for trans in self.monthly_transactions[month]:
-                self.monthly_transactions_by_category[month][trans.category] += float(trans.amount)
+                category_total = self.transaction_db.get_monthly_category_total(month,category) 
+                self.monthly_transactions_by_category[month][category] = category_total
 
             
 
@@ -105,6 +101,4 @@ class WorkbookBuilder:
 
         wb.save('bk_download.xlsx')
 
-def get_month_and_year(transaction_date : date) -> str:
-    return f'{transaction_date.month}-{transaction_date.year}'
 
