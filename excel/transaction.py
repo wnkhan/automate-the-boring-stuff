@@ -19,7 +19,7 @@ class Transaction:
         self.status = transaction_data[5]
 
     def __str__(self) -> str:
-        return str(self.t_date) + ',' + self.d1 + ',' + self.category + ',' + self.amount + ',' + self.status 
+        return str(self.t_date) + ',' + self.d1 + ',' + self.category + ',' + str(self.amount) + ',' + self.status 
 
     @property
     def t_date(self):
