@@ -25,25 +25,33 @@ class TransactionDatabase:
             print("transaction table already created.")
 
     def insert_transaction(self, transaction : Transaction):
-        if(not self.is_transaction_in_table(transaction)):
-            sql_query = f"""
-                    INSERT INTO transactions
-                    VALUES ({self.insertion_count},{transaction.t_date.day},{transaction.t_date.month},{transaction.t_date.year},{transaction.d1},{transaction.d2},
-                    '{transaction.category}',{transaction.amount},'{transaction.status}')
-                    """
-            self.cursor.execute(sql_query)
-            self.connection.commit()
-            self.insertion_count+=1
+        try:
+            if(not (in_table := self.is_transaction_in_table(transaction))):
+                sql_query = f"""
+                        INSERT INTO transactions
+                        VALUES ({self.insertion_count},{transaction.t_date.day},{transaction.t_date.month},{transaction.t_date.year},"{transaction.d1}","{transaction.d2}",
+                        "{transaction.category}",{transaction.amount},"{transaction.status}")
+                        """
+                self.cursor.execute(sql_query)
+                self.connection.commit()
+                self.insertion_count+=1
+        except:
+            print("Insertion failed.")
+            print(sql_query)
 
     def is_transaction_in_table(self, transaction : Transaction) -> bool:
-        sql_query = f"""
-                    SELECT *
-                    FROM transactions
-                    WHERE year = {transaction.t_date.year} AND month = {transaction.t_date.month} AND day = {transaction.t_date.day}
-                    AND d1 = {transaction.d1} AND d2 = {transaction.d2}
-                    """
-        self.cursor.execute(sql_query) 
-        return len(self.cursor.fetchall()) != 0
+        try:
+            sql_query = f"""
+                        SELECT *
+                        FROM transactions
+                        WHERE year = {transaction.t_date.year} AND month = {transaction.t_date.month} AND day = {transaction.t_date.day}
+                        AND d1 = "{transaction.d1}" AND d2 = "{transaction.d2}"
+                        """
+            self.cursor.execute(sql_query) 
+            return len(self.cursor.fetchall()) != 0
+        except sqlite3.OperationalError:
+            print("Skipping insertion of the following transaction: " + str(transaction))
+            return True
 
     def get_all_transactions(self) -> List[Transaction]:
         self.cursor.execute("""

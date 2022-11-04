@@ -1,12 +1,12 @@
 from trans_db_api import TransactionDatabase
-from transaction_extractor import TransactionExtractor
+from extractor import TransactionExtractor
 from workbook_builder import WorkbookBuilder
 
 def main():
     transaction_extractor = TransactionExtractor()
     transaction_db = TransactionDatabase('transaction.sqlite')
 
-    for transaction in transaction_extractor.transaction_list:
+    for transaction in transaction_extractor.get_transactions():
         transaction_db.insert_transaction(transaction)
     
 
