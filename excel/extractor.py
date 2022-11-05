@@ -2,6 +2,9 @@ import pandas as pd
 from trans_db_api import TransactionDatabase
 from transaction import Transaction
 from typing import List
+import os
+
+project_directory = os.environ.get('USERPROFILE') + '/Repos/automate-the-boring-stuff/' 
 
 class TransactionExtractor:
     eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food","Alcohol & Bars"]
@@ -10,7 +13,7 @@ class TransactionExtractor:
                     "LinkedIn","Pluralsight","Game Pass","Prime"]
 
     def __init__(self):
-        self.transactions = pd.read_csv('excel/bk_download.csv')
+        self.transactions = pd.read_csv(project_directory + 'excel/bk_download.csv')
         self.consolidate_eating_out()
         self.consolidate_bills_and_utilities()
         self.consolidate_subscriptions()
