@@ -1,12 +1,15 @@
 import sqlite3
 from typing import List
 from transaction import Transaction
+import os
+
+project_directory = os.environ.get('USERPROFILE') + '/Repos/automate-the-boring-stuff/' 
 
 class TransactionDatabase:
     
     def __init__(self,database_name : str):
         self.insertion_count = 1
-        self.connection = sqlite3.connect(database_name)
+        self.connection = sqlite3.connect(project_directory + database_name)
         self.cursor = self.connection.cursor()
         try:
             table = """ CREATE TABLE transactions(
@@ -58,7 +61,7 @@ class TransactionDatabase:
         SELECT *
         FROM transactions
         """)
-        return [self.tuple_to_trans(row) for row in self.cursor.fetchall()]
+        return [self.tuple_to_transaction(row) for row in self.cursor.fetchall()]
 
     def get_transaction_by_category(self,category):
         self.cursor.execute(f"""
@@ -74,7 +77,7 @@ class TransactionDatabase:
         FROM transactions
         WHERE month = {month} AND year = {year}
         """)
-        return [self.tuple_to_trans(row) for row in self.cursor.fetchall()]
+        return [self.tuple_to_transaction(row) for row in self.cursor.fetchall()]
 
     def get_categories_by_month(self,month,year):
         query = f"""
@@ -117,7 +120,7 @@ class TransactionDatabase:
         """)
         self.connection.commit()
 
-    def tuple_to_trans(self,tran_tuple):
+    def tuple_to_transaction(self,tran_tuple):
         trans_data = [str(tran_tuple[3])+"-"+str(tran_tuple[2])+"-"+str(tran_tuple[1]),tran_tuple[4],tran_tuple[5],tran_tuple[6],tran_tuple[7],tran_tuple[8]]
         return Transaction(transaction_data=trans_data)
 
