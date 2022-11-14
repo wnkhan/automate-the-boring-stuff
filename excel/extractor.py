@@ -28,7 +28,7 @@ class TransactionExtractor:
         
     def consolidate_subscriptions(self) -> None:
         for sub_cat in TransactionExtractor.subscriptions:
-            self.transactions.loc[self.transactions['Description']==sub_cat,'Category'] = 'Subscription'
+            self.transactions.loc[self.transactions['Description'].str.contains(sub_cat),'Category'] = 'Subscription'
 
     def get_transactions(self) -> List[Transaction]:
         return [Transaction(list(row[1:])) for row in self.transactions.itertuples()]
@@ -37,5 +37,5 @@ class TransactionExtractor:
 
 if __name__ == "__main__":
     extractor = TransactionExtractor()
-    for trans in extractor.get_transactions():
-        print(trans)
+    print(extractor.transactions.loc[:,['Date','Description','Category']].query('Category == "Subscription" or Category == "Internet"'))
+    #print(extractor.transactions.head().to_dict('list'))
