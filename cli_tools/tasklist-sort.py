@@ -1,8 +1,6 @@
-from string import whitespace
 import subprocess 
 import re
 from argparse import ArgumentParser 
-from sys import stdout
 
 def main():
     script_args = get_args()
@@ -18,12 +16,16 @@ def main():
     task_list_strings = cleanse_thy_data(lines)
 
     if script_args.sort_type == 'name':
-        task_list_strings.sort(key=lambda task_string : task_string[0].lower())
+        task_list_strings.sort(key=lambda task_string : (task_string[0].lower(), convert_to_int(task_string[4])))
     elif script_args.sort_type == 'mem_usage':
         task_list_strings.sort(key=lambda task_string : convert_to_int(task_string[4]))
+    elif script_args.sort_type == 'pid':
+        task_list_strings.sort(key=lambda task_string : convert_to_int(task_string[1]))
 
+    print(header)
+    print(header_separator)
     for task_item in task_list_strings:
-        print('{:<25} {:>9} {:>10} {:>4} {:>9} {}'.format(*task_item))
+        print('{:<25} {:>8} {:>16} {:>10} {:>10} {}'.format(*task_item))
 
 
 def cleanse_thy_data(data : list) -> list:
@@ -49,7 +51,7 @@ def convert_to_int(value : str) -> int:
 
 def get_args():
     parser = ArgumentParser(description="Module for providing task list sorting functionality")
-    parser.add_argument("--sort",dest="sort_type",default="name",help="valid options: name, mem_usage")
+    parser.add_argument("--sort",dest="sort_type",default="name",help="valid options: name, mem_usage, pid")
     return parser.parse_args()
 
 if __name__ == "__main__":
