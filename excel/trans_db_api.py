@@ -48,7 +48,7 @@ class TransactionDatabase:
                         SELECT *
                         FROM transactions
                         WHERE year = {transaction.t_date.year} AND month = {transaction.t_date.month} AND day = {transaction.t_date.day}
-                        AND d1 = "{transaction.d1}" AND d2 = "{transaction.d2}"
+                        AND d1 = "{transaction.d1}" AND d2 = "{transaction.d2}" AND amount = {transaction.amount}
                         """
             self.cursor.execute(sql_query) 
             return len(self.cursor.fetchall()) != 0
