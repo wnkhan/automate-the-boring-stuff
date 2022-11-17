@@ -1,11 +1,12 @@
 from unicodedata import category
 import openpyxl as xl
 from openpyxl.chart import (PieChart,Reference)
-from typing import Dict, List
-from datetime import date
+from typing import List
 import re
+import os
 from trans_db_api import TransactionDatabase
-from transaction import Transaction
+
+project_directory = os.environ.get('USERPROFILE') + '/Repos/automate-the-boring-stuff/' 
 
 class WorkbookBuilder:
 
@@ -99,6 +100,6 @@ class WorkbookBuilder:
             pie.title = "Spending by Category"
             wb[sheet+"-categories"].add_chart(pie,"D1")
 
-        wb.save('bk_download.xlsx')
+        wb.save(project_directory + 'bk_download.xlsx')
 
 
