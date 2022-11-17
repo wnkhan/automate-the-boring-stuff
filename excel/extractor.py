@@ -28,8 +28,7 @@ class TransactionExtractor:
         
     def consolidate_subscriptions(self) -> None:
         for sub_cat in TransactionExtractor.subscriptions:
-            self.transactions.loc[self.transactions['Description'].str.contains(sub_cat),['Category']] = 'Subscription'
-            print(self.transactions.loc[self.transactions['Category'] == 'Subscription'])
+            self.transactions.loc[self.transactions['Description'].str.contains(sub_cat),'Category'] = 'Subscription'
 
     def get_transactions(self) -> List[Transaction]:
         return [Transaction(list(row[1:])) for row in self.transactions.itertuples()]
