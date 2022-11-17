@@ -7,7 +7,7 @@ import os
 project_directory = os.environ.get('USERPROFILE') + '/Repos/automate-the-boring-stuff/' 
 
 class TransactionExtractor:
-    eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food","Alcohol & Bars"]
+    eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food","Food Dining","Alcohol & Bars"]
     bill_and_utility_categories = ["car","Mobile Phone", "Rent", "Storage","Utilities"]
     subscriptions = ["Apple","Netflix","Spotify","ExpressVPN","Youtube","Medium",
                     "LinkedIn","Pluralsight","Game Pass","Prime"]
@@ -28,14 +28,8 @@ class TransactionExtractor:
         
     def consolidate_subscriptions(self) -> None:
         for sub_cat in TransactionExtractor.subscriptions:
-            self.transactions.loc[self.transactions['Description']==sub_cat,'Category'] = 'Subscription'
+            self.transactions.loc[self.transactions['Description'].str.contains(sub_cat),['Category']] = 'Subscription'
+            print(self.transactions.loc[self.transactions['Category'] == 'Subscription'])
 
     def get_transactions(self) -> List[Transaction]:
         return [Transaction(list(row[1:])) for row in self.transactions.itertuples()]
-
-
-
-if __name__ == "__main__":
-    extractor = TransactionExtractor()
-    for trans in extractor.get_transactions():
-        print(trans)
