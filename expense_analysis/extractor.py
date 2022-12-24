@@ -13,7 +13,7 @@ class TransactionExtractor:
                     "LinkedIn","Pluralsight","Game Pass","Prime"]
 
     def __init__(self):
-        self.transactions = pd.read_csv(project_directory + 'excel/bk_download.csv')
+        self.transactions = pd.read_csv(project_directory + 'expense_analysis/bk_download.csv')
         self.consolidate_eating_out()
         self.consolidate_bills_and_utilities()
         self.consolidate_subscriptions()
