@@ -5,13 +5,7 @@ from argparse import ArgumentParser
 def main():
     script_args = get_args()
 
-    tasklist_process = subprocess.Popen('tasklist',stdout=subprocess.PIPE)
-
-    std_out, std_error = tasklist_process.communicate()
-
-    all_lines = str(std_out,encoding='utf-8').strip().split('\n')
-
-    header, header_separator, *lines  = all_lines
+    header, header_separator, *lines  = get_cmd_output('tasklist')
 
     task_list_strings = cleanse_thy_data(lines)
 
@@ -26,6 +20,15 @@ def main():
     print(header_separator)
     for task_item in task_list_strings:
         print('{:<25} {:>8} {:>16} {:>10} {:>10} {}'.format(*task_item))
+
+
+def get_cmd_output(command: str) -> list:
+    tasklist_process = subprocess.Popen(command,stdout=subprocess.PIPE)
+
+    std_out, std_error = tasklist_process.communicate()
+
+    return str(std_out,encoding='utf-8').strip().split('\n')
+    
 
 
 def cleanse_thy_data(data : list) -> list:
