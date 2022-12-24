@@ -8,7 +8,7 @@
             "name": "Mem Usage",
             "type": "python",
             "request": "launch",
-            "program": "tasklist-sort.py",
+            "program": "cli_tools\\tasklist-sort.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["--sort","mem_usage"]
@@ -17,16 +17,25 @@
             "name": "Process Name",
             "type": "python",
             "request": "launch",
-            "program": "tasklist-sort.py",
+            "program": "cli_tools\\tasklist-sort.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["--sort","name"]
         },
         {
+            "name": "pid",
+            "type": "python",
+            "request": "launch",
+            "program": "cli_tools\\tasklist-sort.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--sort","pid"]
+        },
+        {
             "name": "Help",
             "type": "python",
             "request": "launch",
-            "program": "tasklist-sort.py",
+            "program": "cli_tools\\tasklist-sort.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["--help"]
