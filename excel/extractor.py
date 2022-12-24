@@ -8,7 +8,7 @@ project_directory = os.environ.get('USERPROFILE') + '/Repos/automate-the-boring-
 
 class TransactionExtractor:
     eating_out_categories = ["Coffee Shops","Restaurants", "Food & Dining", "Fast Food","Food Dining","Alcohol & Bars"]
-    bill_and_utility_categories = ["car","Mobile Phone", "Rent", "Storage","Utilities"]
+    bill_and_utility_categories = ["Car","Mobile Phone", "Rent", "Storage","Utilities"]
     subscriptions = ["Apple","Netflix","Spotify","ExpressVPN","Youtube","Medium",
                     "LinkedIn","Pluralsight","Game Pass","Prime"]
 
