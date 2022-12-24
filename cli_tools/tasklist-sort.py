@@ -16,11 +16,15 @@ def main():
     elif script_args.sort_type == 'pid':
         task_list_strings.sort(key=lambda task_string : convert_to_int(task_string[1]))
 
-    print(header)
-    print(header_separator)
-    for task_item in task_list_strings:
-        print('{:<25} {:>8} {:>16} {:>10} {:>10} {}'.format(*task_item))
 
+    display_data(header,header_separator,task_rows=task_list_strings)
+
+
+def display_data(header: str, header_sep: str, task_rows: list):
+    print(header)
+    print(header_sep)
+    for task_item in task_rows:
+        print('{:<25} {:>8} {:>16} {:>10} {:>10} {}'.format(*task_item))
 
 def get_cmd_output(command: str) -> list:
     tasklist_process = subprocess.Popen(command,stdout=subprocess.PIPE)
@@ -29,8 +33,6 @@ def get_cmd_output(command: str) -> list:
 
     return str(std_out,encoding='utf-8').strip().split('\n')
     
-
-
 def cleanse_thy_data(data : list) -> list:
     tasklist_regex = "([a-zA-Z. ]+[^\s$])(\s+)([0-9]+)(\s)([a-zA-Z]+)(\s+)([0-9]+)(\s+)([0-9,]+)(\s+)([kK])"
     matches = [match for line in data if (match := re.match(tasklist_regex,line))]
