@@ -22,7 +22,6 @@ def update_transaction_db_from_downloads() -> None:
 
             update_dict = {}
             for row in category_pending_df.itertuples():
-                print(row[5])
                 search_df = master_df.loc[(master_df['Amount'] == row[5])]
                 if not search_df.empty:
                     update_dict.setdefault(row[0],search_df.iloc[0]['Category'])
