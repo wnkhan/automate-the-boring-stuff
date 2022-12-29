@@ -12,8 +12,8 @@ class TransactionExtractor:
     subscriptions = ["Apple","Netflix","Spotify","ExpressVPN","Youtube","Medium",
                     "LinkedIn","Pluralsight","Game Pass","Prime"]
 
-    def __init__(self):
-        self.transactions = pd.read_csv(project_directory + 'expense_analysis/bk_download.csv')
+    def __init__(self, csv_name: str):
+        self.transactions = pd.read_csv(csv_name)
         self.consolidate_eating_out()
         self.consolidate_bills_and_utilities()
         self.consolidate_subscriptions()
