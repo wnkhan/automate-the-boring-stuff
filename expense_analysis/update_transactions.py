@@ -1,9 +1,11 @@
 import os
 import pandas as pd
 from os import DirEntry
-from typing import List
+from trans_db_api import TransactionDatabase
+from transaction import Transaction
+from extractor import TransactionExtractor
 
-def get_bank_data_files() -> List[str]:
+def update_transaction_db_from_downloads() -> None: 
     bank_data_files = []
 
     if(user_home := os.environ.get('USERPROFILE')):
@@ -12,22 +14,32 @@ def get_bank_data_files() -> List[str]:
 
             bank_data_df_s = []
             for csv in csv_s:
-                df = pd.read_csv(csv)
-                bank_data_df_s.append(df)
+                extractor = TransactionExtractor(csv_name = csv.path)
+                bank_data_df_s.append(extractor.transactions)
             master_df = pd.concat(bank_data_df_s, ignore_index=True)
 
             category_pending_df = master_df.loc[master_df['Category'] == 'Category Pending']
 
             update_dict = {}
             for row in category_pending_df.itertuples():
-                search_df = master_df.loc[(master_df['Date'] == row[1]) & (master_df['Description'] == row[2])]
-                update_dict.setdefault(row[0],search_df.iloc[0]['Category'])
+                print(row[5])
+                search_df = master_df.loc[(master_df['Amount'] == row[5])]
+                if not search_df.empty:
+                    update_dict.setdefault(row[0],search_df.iloc[0]['Category'])
 
             for key, value in update_dict.items():
                 master_df.at[key,'Category'] = value
 
             master_df.drop_duplicates()
-            master_df.to_csv(os.path.join(user_home,'Repos','automate-the-boring-stuff','excel','bk_download.csv'), index=False)
+
+            all_transactions =  [Transaction(list(row[1:])) for row in master_df.itertuples()]
+
+            trans_db = TransactionDatabase('transaction.sqlite')
+
+            for trans in all_transactions:
+                trans_db.insert_transaction(trans)
+
+            
     else:
         print("Couldn't find user home.")
 
@@ -38,4 +50,4 @@ def is_csv(file : DirEntry):
 
 
 if __name__ == '__main__':
-    get_bank_data_files()
+    update_transaction_db_from_downloads()
