@@ -1,12 +1,12 @@
 from unicodedata import category
 import openpyxl as xl
+from os import getcwd, path
 from openpyxl.chart import (PieChart,Reference)
 from typing import List
 import re
-import os
 from trans_db_api import TransactionDatabase
 
-project_directory = os.environ.get('USERPROFILE') + '/Repos/automate-the-boring-stuff/' 
+project_directory = getcwd()
 
 class WorkbookBuilder:
 
@@ -48,11 +48,13 @@ class WorkbookBuilder:
         self.update_workbook_data()
 
         wb = xl.Workbook()
+        sheet_dict = {}
         del wb['Sheet']
 
         for sheet in self.get_sheetnames():
-            wb.create_sheet(sheet)
-            wb.create_sheet(sheet+"-categories")
+            sheet_dict.setdefault(sheet,wb.create_sheet(sheet))
+            sheet_dict.setdefault(sheet+"-categories",wb.create_sheet(sheet+"-categories"))
+
 
             sorted_list = sorted(self.monthly_transactions[sheet], key = lambda trans : trans.category)
             for trans in sorted_list:
@@ -100,6 +102,8 @@ class WorkbookBuilder:
             pie.title = "Spending by Category"
             wb[sheet+"-categories"].add_chart(pie,"D1")
 
-        wb.save(project_directory + 'bk_download.xlsx')
+        for ws in wb.worksheets:
+            ws.sheet_view.zoomScale = 130
+        wb.save(path.join(project_directory,'bk_download.xlsx'))
 
 

@@ -1,15 +1,25 @@
-import os
+from os import DirEntry, environ, scandir, path
+import platform
 import pandas as pd
-from os import DirEntry
 from trans_db_api import TransactionDatabase
 from transaction import Transaction
 from extractor import TransactionExtractor
 
+def get_user_home():
+    user_home = None
+
+    if platform.system() == 'Darwin':
+        user_home = environ.get('HOME')
+    elif platform.system('Windows'):
+        user_home = environ.get('USERPROFILE')
+
+    return user_home
+
 def update_transaction_db_from_downloads() -> None: 
     bank_data_files = []
 
-    if(user_home := os.environ.get('USERPROFILE')):
-        with os.scandir(user_home +'\Downloads') as directory:
+    if(user_home := get_user_home()):
+        with scandir(path.join(user_home,'Downloads')) as directory:
             csv_s = filter(is_csv,directory)
 
             bank_data_df_s = []
