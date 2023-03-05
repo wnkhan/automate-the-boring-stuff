@@ -94,6 +94,9 @@ class WorkbookBuilder:
 
             wb[sheet+"-categories"].append([10*"-",10*"-"])
 
+            surplus_formula = f"=SUM(B{number_of_expense_categories+2},B{2+number_of_rows_before_income_total})"
+            wb[sheet+"-categories"].append(["Surplus",surplus_formula])
+
             pie = PieChart()
             labels = Reference(wb[sheet+"-categories"],min_col=1,min_row=1,max_row=len(self.get_categories_by_month(sheet))-len(income_category))
             data = Reference(wb[sheet+"-categories"],min_col=2,min_row=1,max_row=len(self.get_categories_by_month(sheet))-len(income_category))
