@@ -7,7 +7,8 @@ table_inspect_path = os.path.join(project_root,'data_ingestion','ingested')
 def main():
     registered_actions = {'get_cols': get_columns,
                           'get_col': get_col,
-                          'head': get_head}
+                          'head': get_head,
+                          'get_distinct':get_distinct}
 
     table_name = input("which table: ")
     action = input(f"which action {registered_actions.keys()}:")
@@ -39,6 +40,16 @@ def get_col(table_name, table: pd.DataFrame):
 
     for row in table[col_name]:
         print(row)
+
+
+def get_distinct(table_name, table: pd.DataFrame):
+    print('table_name: ' + table_name)
+    col_list_str =', '.join(table.columns.to_list())
+    col_name = input('what column:\n' + col_list_str + '\n')
+    print('distinct columns:')
+    for col in table[col_name].unique():
+        print(col)
+
 
 def get_head(table_name, table: pd.DataFrame):
     print('table_name: ' + table_name)
