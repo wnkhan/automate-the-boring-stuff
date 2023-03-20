@@ -34,6 +34,7 @@ class TransactionExtractor:
         self.consolidate_subscriptions()
         self.consolidate_public_trans()
         self.consolidate_shopping()
+        self.remove_usaa_transfers()
 
     def consolidate_eating_out(self) -> None:
         for eating_cat in TransactionExtractor.eating_out_categories:
@@ -56,6 +57,12 @@ class TransactionExtractor:
     def consolidate_shopping(self) -> None:
         for shopping_cat in TransactionExtractor.shopping:
             self.transactions['Category'].mask(self.transactions['Category'] == shopping_cat, 'Shopping',inplace=True)
+
+    def remove_usaa_transfers(self) -> None:
+        selected = self.transactions.query('"USAA Transfer" in Description and Amount < 0')
+        print('Removed:')
+        print(selected.head())
+        self.transactions.drop(selected.index,inplace=True)
 
     def get_transactions(self) -> List[Transaction]:
         return [Transaction(list(row[1:])) for row in self.transactions.itertuples()]
