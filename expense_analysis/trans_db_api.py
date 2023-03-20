@@ -61,7 +61,8 @@ class TransactionDatabase:
         SELECT *
         FROM transactions
         """)
-        return [self.tuple_to_transaction(row) for row in self.cursor.fetchall()]
+        fetched = self.cursor.fetchall()
+        return [self.tuple_to_transaction(row) for row in fetched]
 
     def get_transaction_by_category(self,category):
         self.cursor.execute(f"""
@@ -77,7 +78,8 @@ class TransactionDatabase:
         FROM transactions
         WHERE month = {month} AND year = {year}
         """)
-        return [self.tuple_to_transaction(row) for row in self.cursor.fetchall()]
+        fetched = self.cursor.fetchall()
+        return [self.tuple_to_transaction(row) for row in fetched]
 
     def get_categories_by_month(self,month,year):
         query = f"""
