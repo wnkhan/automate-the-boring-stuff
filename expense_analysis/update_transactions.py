@@ -41,7 +41,7 @@ def update_transaction_db_from_downloads() -> None:
 
             master_df.drop_duplicates()
 
-            all_transactions =  [Transaction(list(row[1:])) for row in master_df.itertuples()]
+            all_transactions =  [Transaction(row) for index, row in master_df.iterrows()]
 
             trans_db = TransactionDatabase('transaction.sqlite')
 
