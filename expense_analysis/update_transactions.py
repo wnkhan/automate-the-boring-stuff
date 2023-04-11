@@ -20,7 +20,7 @@ def update_transaction_db_from_downloads() -> None:
 
     if(user_home := get_user_home()):
         with scandir(path.join(user_home,'Downloads')) as directory:
-            csv_s = filter(is_csv,directory)
+            csv_s = filter(is_transaction_csv,directory)
 
             bank_data_df_s = []
             for csv in csv_s:
@@ -54,8 +54,8 @@ def update_transaction_db_from_downloads() -> None:
 
     return bank_data_files
 
-def is_csv(file : DirEntry):
-    return file.is_file() and file.name.endswith('.csv')
+def is_transaction_csv(file : DirEntry):
+    return file.is_file() and file.name.endswith('.csv') and file.name.startswith('bk_download')
 
 
 if __name__ == '__main__':
