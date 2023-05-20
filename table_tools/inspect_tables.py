@@ -1,8 +1,7 @@
 import os
 import pandas as pd
 
-project_root = os.getcwd()
-table_inspect_path = os.path.join(project_root,'data_ingestion','ingested')
+table_inspect_path = os.getcwd()
 
 def main():
     registered_actions = {'get_cols': get_columns,
