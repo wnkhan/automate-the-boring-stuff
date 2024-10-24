@@ -8,7 +8,7 @@ from extractor import TransactionExtractor
 def get_user_home():
     user_home = None
 
-    if platform.system() == 'Darwin':
+    if platform.system() in ['Darwin','Linux']:
         user_home = environ.get('HOME')
     elif platform.system('Windows'):
         user_home = environ.get('USERPROFILE')
