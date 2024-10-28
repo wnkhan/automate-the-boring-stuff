@@ -13,17 +13,20 @@ class TransactionExtractor:
     public_trans_descriptions = ["Indego"]
 
 
-    bill_and_utility_categories = ["Car","Mobile Phone", 
+    bill_and_utility_categories = ["Mortgage & Rent",
+                                   "Car",
+                                   "Mobile Phone", 
                                    "Rent", "Storage",
                                    "Utilities","Internet"]
 
-    bill_and_utility_descriptions = ["Fi"]
+    bill_and_utility_descriptions = ["Fi","Auto Ivr"]
 
     subscriptions = ["Apple","Netflix",
                      "Spotify","ExpressVPN",
                      "Youtube","Medium",
                     "LinkedIn","Pluralsight",
-                    "Game Pass","Prime","Amznfreetime"]
+                    "Game Pass","Prime","Amznfreetime",
+                    "Zoom"]
 
     shopping = ['Electronics & Software','Pet Food & Supplies','Clothing']
 
@@ -46,7 +49,7 @@ class TransactionExtractor:
 
     def consolidate_bills_and_utilities(self) -> None:
         for bill_cat in TransactionExtractor.bill_and_utility_categories: 
-            self.transactions['Category'].mask(self.transactions['Category'] == bill_cat, 'Bills & Utilities',inplace=True)
+            self.transactions.loc[self.transactions['Category'] == bill_cat, 'Category'] = 'Bills & Utilities'
         for bill_descr in TransactionExtractor.bill_and_utility_descriptions:
             self.transactions.loc[self.transactions['Description'].str.contains(bill_descr),'Category'] = 'Bills & Utilities'
 
