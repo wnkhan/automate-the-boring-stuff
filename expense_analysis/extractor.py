@@ -1,5 +1,4 @@
 import pandas as pd
-from trans_db_api import TransactionDatabase
 from transaction import Transaction
 from typing import List
 
