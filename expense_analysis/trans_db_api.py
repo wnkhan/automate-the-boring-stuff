@@ -1,15 +1,13 @@
 import sqlite3
 from typing import List
 from transaction import Transaction
-import os
 
-project_directory = os.getcwd()
 
 class TransactionDatabase:
     
     def __init__(self,database_name : str):
         self.insertion_count = 1
-        self.connection = sqlite3.connect(os.path.join(project_directory,database_name))
+        self.connection = sqlite3.connect(database_name)
         self.cursor = self.connection.cursor()
         try:
             table = """ CREATE TABLE transactions(
