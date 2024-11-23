@@ -74,7 +74,7 @@ class TransactionDatabase:
         self.cursor.execute(f"""
         SELECT *
         FROM transactions
-        WHERE month = {month} AND year = {year}
+        WHERE month = '{month}' AND year = '{year}'
         """)
         fetched = self.cursor.fetchall()
         return [self.tuple_to_transaction(row) for row in fetched]
@@ -83,7 +83,7 @@ class TransactionDatabase:
         query = f"""
         SELECT DISTINCT category
         FROM transactions
-        WHERE month = {month} AND year = {year}
+        WHERE month = '{month}' AND year = '{year}'
         """
         self.cursor.execute(query)
         return self.cursor.fetchall()
@@ -94,7 +94,7 @@ class TransactionDatabase:
         query = f"""
         SELECT SUM(amount)
         FROM transactions
-        WHERE month = {month} AND year = {year} AND category = '{category}'
+        WHERE month = '{month}' AND year = '{year}' AND category = '{category}'
         """
         self.cursor.execute(query)
         return self.cursor.fetchone()[0]
