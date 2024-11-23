@@ -5,15 +5,7 @@ from trans_db_api import TransactionDatabase
 from transaction import Transaction
 from extractor import TransactionExtractor
 
-def get_user_home():
-    user_home = None
 
-    if platform.system() in ['Darwin','Linux']:
-        user_home = environ.get('HOME')
-    elif platform.system('Windows'):
-        user_home = environ.get('USERPROFILE')
-
-    return user_home
 
 def update_transaction_db_from_downloads() -> None: 
     bank_data_files = []

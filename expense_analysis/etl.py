@@ -1,14 +1,26 @@
 import os
+import platform
 import pandas as pd
 import sqlite3
 from field_masks import category_mappings, description_mappings
+
+
+def get_user_home():
+    user_home = None
+
+    if platform.system() in ['Darwin','Linux']:
+        user_home = os.environ.get('HOME')
+    elif platform.system() == "Windows":
+        user_home = os.environ.get('USERPROFILE')
+
+    return user_home
 
 class Transaction_Etl:
 
     def __init__(self):
         self.df = None
 
-    def ingest(self, table_name, extension, path="~/Downloads"):
+    def ingest(self, table_name, extension, path=os.path.join(get_user_home(),"Downloads")):
         match extension:
             case "csv":
                 self.df = pd.read_csv(os.path.join(path,".".join([table_name,extension])))
