@@ -5,7 +5,7 @@ from trans_db_api import TransactionDatabase
 
 def main():
     etl = Transaction_Etl()
-    etl.ingest('bk_download','csv','~/Downloads/mounted')
+    etl.ingest('bk_download','csv')
     etl.transform()
     etl.load('data')
 
