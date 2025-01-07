@@ -1,15 +1,13 @@
 import sqlite3
 from typing import List
 from transaction import Transaction
-import os
 
-project_directory = os.getcwd()
 
 class TransactionDatabase:
     
     def __init__(self,database_name : str):
         self.insertion_count = 1
-        self.connection = sqlite3.connect(os.path.join(project_directory,database_name))
+        self.connection = sqlite3.connect(database_name)
         self.cursor = self.connection.cursor()
         try:
             table = """ CREATE TABLE transactions(
@@ -76,7 +74,7 @@ class TransactionDatabase:
         self.cursor.execute(f"""
         SELECT *
         FROM transactions
-        WHERE month = {month} AND year = {year}
+        WHERE month = '{month}' AND year = '{year}'
         """)
         fetched = self.cursor.fetchall()
         return [self.tuple_to_transaction(row) for row in fetched]
@@ -85,7 +83,7 @@ class TransactionDatabase:
         query = f"""
         SELECT DISTINCT category
         FROM transactions
-        WHERE month = {month} AND year = {year}
+        WHERE month = '{month}' AND year = '{year}'
         """
         self.cursor.execute(query)
         return self.cursor.fetchall()
@@ -96,7 +94,7 @@ class TransactionDatabase:
         query = f"""
         SELECT SUM(amount)
         FROM transactions
-        WHERE month = {month} AND year = {year} AND category = '{category}'
+        WHERE month = '{month}' AND year = '{year}' AND category = '{category}'
         """
         self.cursor.execute(query)
         return self.cursor.fetchone()[0]
