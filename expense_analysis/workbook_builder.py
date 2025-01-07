@@ -5,11 +5,13 @@ from openpyxl.chart import (PieChart,Reference)
 from typing import List
 import re
 from trans_db_api import TransactionDatabase
+from timing import clocked
 
 project_directory = getcwd()
 
 class WorkbookBuilder:
 
+    @clocked
     def __init__(self, transaction_db : TransactionDatabase):
         self.transaction_db = transaction_db
         self.monthly_transactions = {}
@@ -27,6 +29,7 @@ class WorkbookBuilder:
         return categories
 
 
+    @clocked
     def update_workbook_data(self) -> None:
         for month_year in self.transaction_db.get_unique_month_and_years():
             month, year = month_year.split('-')
@@ -44,6 +47,7 @@ class WorkbookBuilder:
 
             
 
+    @clocked
     def build_workbook(self) -> None:
         self.update_workbook_data()
 

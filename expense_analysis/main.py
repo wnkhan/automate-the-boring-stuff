@@ -2,7 +2,9 @@ import os
 from workbook_builder import WorkbookBuilder
 from etl import Transaction_Etl, get_user_home
 from trans_db_api import TransactionDatabase
+from timing import clocked
 
+@clocked
 def refresh_project_data():
     for file in ['data.db','bk_download.xlsx']:
         project_path = os.path.join(os.getcwd(),file)

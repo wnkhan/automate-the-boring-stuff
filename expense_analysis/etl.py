@@ -4,6 +4,7 @@ import pandas as pd
 import sqlite3
 import glob
 from field_masks import category_mappings, description_mappings
+from timing import clocked
 
 
 def get_user_home():
@@ -18,9 +19,11 @@ def get_user_home():
 
 class Transaction_Etl:
 
+    @clocked
     def __init__(self):
         self.df = None
 
+    @clocked
     def ingest(self, table_name, extension, path=os.path.join(get_user_home(),"Downloads")):
         all_files = glob.glob(os.path.join(path, f"{table_name}*.{extension}"))
         df_list = []
@@ -36,6 +39,7 @@ class Transaction_Etl:
         self.df = pd.concat(df_list).drop_duplicates().reset_index(drop=True)
 
 
+    @clocked
     def transform(self):
         for category, mapping_list in category_mappings.items():
             self.df.loc[self.df['Category'].isin(mapping_list),'Category'] = category
@@ -57,6 +61,7 @@ class Transaction_Etl:
         column_ordering = ['id','day','month','year','d1','d2','category','amount','status']
         self.df = self.df[column_ordering]
 
+    @clocked
     def load(self, db_name):
         with sqlite3.connect(".".join([db_name,"db"])) as conn:
             self.df.to_sql('transactions',conn,if_exists='replace',index=False)
