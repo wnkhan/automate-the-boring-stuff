@@ -2,6 +2,7 @@ import os
 import platform
 import pandas as pd
 import sqlite3
+import glob
 from field_masks import category_mappings, description_mappings
 
 
@@ -21,11 +22,18 @@ class Transaction_Etl:
         self.df = None
 
     def ingest(self, table_name, extension, path=os.path.join(get_user_home(),"Downloads")):
-        match extension:
-            case "csv":
-                self.df = pd.read_csv(os.path.join(path,".".join([table_name,extension])))
-            case "tsv":
-                self.df = pd.read_table(os.path.join(path,".".join(table_name,extension)))
+        all_files = glob.glob(os.path.join(path, f"{table_name}*.{extension}"))
+        df_list = []
+
+        for file in all_files:
+            if extension == "csv":
+                df_list.append(pd.read_csv(file))
+            elif extension == "tsv":
+                df_list.append(pd.read_table(file))
+            else:
+                raise ValueError(f"Unsupported file extension: {extension}")
+
+        self.df = pd.concat(df_list).drop_duplicates().reset_index(drop=True)
 
 
     def transform(self):
