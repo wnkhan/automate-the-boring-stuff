@@ -1,24 +1,35 @@
 import subprocess 
 import re
 from argparse import ArgumentParser 
+import pandas as pd
 
 def main():
     script_args = get_args()
 
-    header, header_separator, *lines  = get_cmd_output('tasklist')
+    header, *lines  = get_cmd_output('tasklist')
 
     task_list_strings = cleanse_thy_data(lines)
 
-    if script_args.sort_type == 'name':
-        task_list_strings.sort(key=lambda task_string : (task_string[0].lower(), convert_to_int(task_string[4])))
-    elif script_args.sort_type == 'mem_usage':
-        task_list_strings.sort(key=lambda task_string : convert_to_int(task_string[4]))
-    elif script_args.sort_type == 'pid':
-        task_list_strings.sort(key=lambda task_string : convert_to_int(task_string[1]))
+    task_list_df = create_task_list_dataframe(parse_header(header),task_list_strings)
+
+    col_mapping = {'name':'Image Name','mem_usage':'Mem Usage','pid':'PID','sesh_name':'Session Name'}
+
+    sort_cols = [col_mapping[col] for col in script_args.sort_type]
+
+    task_list_df.sort_values(by=sort_cols,inplace=True)    
+
+    print(task_list_df.to_string(index=False))
 
 
-    display_data(header,header_separator,task_rows=task_list_strings)
+def create_task_list_dataframe(header, task_list_strings: list) -> list:
+    task_list_df = pd.DataFrame(task_list_strings,columns=header)
+    return task_list_df
 
+def parse_header(header: str) -> list:
+    column_labels = re.split(r'\s{2,}+',header.strip())
+    column_labels.insert(2, ' '.join(column_labels[1].split()[1:]))
+    column_labels[1] = column_labels[1].split()[0]
+    return column_labels
 
 def display_data(header: str, header_sep: str, task_rows: list):
     print(header)
@@ -47,6 +58,7 @@ def cleanse_thy_data(data : list) -> list:
         if purged_match:
             whitespace_purged_matches.append(purged_match)
 
+    whitespace_purged_matches = [item[0:4] + [' '.join(item[4:])] for item in whitespace_purged_matches]
     return whitespace_purged_matches
 
 def convert_to_int(value : str) -> int:
@@ -56,7 +68,7 @@ def convert_to_int(value : str) -> int:
 
 def get_args():
     parser = ArgumentParser(description="Module for providing task list sorting functionality")
-    parser.add_argument("--sort",dest="sort_type",default="name",help="valid options: name, mem_usage, pid")
+    parser.add_argument("--sort", dest="sort_type", nargs='+', default=["name"], help="valid options: name, mem_usage, pid")
     return parser.parse_args()
 
 if __name__ == "__main__":
