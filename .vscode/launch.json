@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Multi",
+            "type": "python",
+            "request": "launch",
+            "program": "cli_tools\\tasklist-sort.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--sort","sesh_name","name"]
+        },
+        {
             "name": "Mem Usage",
             "type": "python",
             "request": "launch",
